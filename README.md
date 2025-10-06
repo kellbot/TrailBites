@@ -12,15 +12,29 @@ A GitHub Pages project that displays trail locations on an interactive map using
 
 ## Setup Instructions
 
-### 1. Google Maps API Key
+### 1. Google Maps API Key (Secure Setup)
 
-To use this project, you'll need a Google Maps API key:
+To use this project securely:
 
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Enable the "Maps JavaScript API"
-4. Create credentials (API key)
-5. Replace `YOUR_API_KEY_HERE` in `index.html` with your actual API key
+#### Option A: GitHub Actions (Recommended)
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project and enable "Maps JavaScript API"
+3. Create an API key and restrict it to your GitHub Pages domain
+4. Go to your GitHub repository Settings > Secrets and variables > Actions
+5. Add a new secret named `GOOGLE_MAPS_API_KEY` with your API key
+6. The GitHub Actions workflow will automatically inject it during deployment
+
+#### Option B: Local Configuration
+1. Copy `config.js` to your local environment
+2. Replace `YOUR_API_KEY_HERE` with your actual API key
+3. Add `config.js` to `.gitignore` (already done)
+4. **Never commit your API key to the repository**
+
+#### API Key Security (Critical!)
+1. In Google Cloud Console, restrict your API key:
+   - **Application restrictions**: HTTP referrers
+   - **Allowed referrers**: `https://yourusername.github.io/*`
+   - **API restrictions**: Maps JavaScript API only
 
 ### 2. GitHub Pages Deployment
 
@@ -132,3 +146,25 @@ This project is open source. Feel free to modify and distribute.
 - Verify latitude/longitude values are valid numbers
 - Check that coordinates are within valid ranges (-90 to 90 for lat, -180 to 180 for lng)
 - Look for console warnings about invalid data
+
+### CSV Updates Not Showing
+- The project uses cache-busting techniques to prevent CSV caching
+- If updates still don't appear, try:
+  - Hard refresh (Ctrl+F5 or Cmd+Shift+R)
+  - Clear browser cache
+  - Wait a few minutes for GitHub Pages to update
+  - Update the version in `data/version.json` when making changes
+
+## Cache Management
+
+To ensure CSV updates are reflected immediately:
+
+1. **Automatic Cache Busting**: The app automatically appends timestamps to CSV requests
+2. **Version Control**: Update `data/version.json` when making significant changes
+3. **Manual Cache Clear**: Users can force reload with Ctrl+F5
+
+When updating trail data:
+1. Edit `data/trails.csv`
+2. Update version in `data/version.json`
+3. Commit and push changes
+4. GitHub Pages will update within a few minutes
