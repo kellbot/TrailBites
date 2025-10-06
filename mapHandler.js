@@ -2,6 +2,7 @@
 let map;
 let markers = [];
 let infoWindow;
+let routePolylines = []; // Store route polylines
 
 // Initialize the Google Map
 function initMap() {
@@ -61,8 +62,8 @@ async function loadTrailData() {
         // Clear existing markers
         clearMarkers();
         
-        // Load data from CSV file
-        const trailData = await loadCSVData('data/trails.csv');
+        // Load data from JSON file
+        const trailData = await loadJSONData('data/locations.json');
         
         if (trailData.length === 0) {
             throw new Error('No valid trail data found');
@@ -73,7 +74,7 @@ async function loadTrailData() {
         
         // Fit map to show all markers
         fitMapToMarkers();
-        
+           
         // Populate trails table
         populateTrailsTable(trailData);
         
@@ -85,6 +86,12 @@ async function loadTrailData() {
         const legend = document.getElementById('legend');
         if (legend) {
             legend.style.display = 'block';
+        }
+        
+        // Show the route toggle button
+        const toggleButton = document.getElementById('toggleRoutes');
+        if (toggleButton) {
+            toggleButton.style.display = 'inline-block';
         }
         
     } catch (error) {
@@ -181,6 +188,16 @@ function addMarkersToMap(trailData) {
         });
 
         markers.push(marker);
+
+        if(trail.route_waypoints && Array.isArray(trail.route_waypoints) && trail.route_waypoints.length > 1) {
+            // Draw route for this trail using waypoints
+            const waypoints = trail.route_waypoints.map(coord => ({ lat: coord[0], lng: coord[1] }));
+            drawRoute(waypoints, {
+                strokeColor: getMarkerColor(trail.difficulty),
+                strokeWeight: 5,
+                strokeOpacity: 0.8
+            });
+        }
     });
     
     console.log(`Added ${markers.length} markers to map`);
@@ -206,18 +223,22 @@ function createInfoWindowContent(trail) {
     ];
     
     fields.forEach(field => {
-        if (trail[field.key] && trail[field.key].trim()) {
+        // Convert field value to string and check if it has content
+        const fieldValue = trail[field.key];
+        const fieldString = fieldValue !== null && fieldValue !== undefined ? String(fieldValue).trim() : '';
+        
+        if (fieldString) {
             const div = document.createElement('div');
             
             // Special handling for difficulty to show color coding
             if (field.key === 'difficulty') {
-                const difficultyValue = parseInt(trail[field.key]) || 1;
+                const difficultyValue = parseInt(fieldValue) || 1;
                 const difficultyText = getDifficultyText(difficultyValue);
                 const color = getDifficultyDisplayColor(difficultyValue);
                 
                 div.innerHTML = `<strong>${field.label}:</strong> <span style="color: ${color}; font-weight: bold;">${difficultyValue} - ${difficultyText}</span>`;
             } else {
-                div.innerHTML = `<strong>${field.label}:</strong> ${trail[field.key]}`;
+                div.innerHTML = `<strong>${field.label}:</strong> ${fieldString}`;
             }
             
             div.style.marginBottom = '5px';
@@ -242,6 +263,9 @@ function clearMarkers() {
     });
     markers = [];
     
+    // Also clear routes
+    clearRoutes();
+    
     if (infoWindow) {
         infoWindow.close();
     }
@@ -263,6 +287,168 @@ function fitMapToMarkers() {
     google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
         if (map.getZoom() > 15) {
             map.setZoom(15);
+        }
+    });
+}
+
+// Toggle route visibility
+let routesVisible = true;
+function toggleRoutes() {
+    const toggleButton = document.getElementById('toggleRoutes');
+    
+    if (routesVisible) {
+        // Hide routes
+        routePolylines.forEach(polyline => {
+            if (polyline.setMap) {
+                polyline.setMap(null);
+            } else if (polyline.setDirections) {
+                // For DirectionsRenderer
+                polyline.setMap(null);
+            }
+        });
+        routesVisible = false;
+        if (toggleButton) toggleButton.textContent = 'Show Routes';
+    } else {
+        // Show routes
+        routePolylines.forEach(polyline => {
+            if (polyline.setMap) {
+                polyline.setMap(map);
+            }
+        });
+        routesVisible = true;
+        if (toggleButton) toggleButton.textContent = 'Hide Routes';
+    }
+}
+
+// Route Drawing Functions
+
+// Draw a route between sequential GPS coordinates
+function drawRoute(coordinates, routeOptions = {}) {
+    const defaultOptions = {
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+        geodesic: true
+    };
+    
+    const options = { ...defaultOptions, ...routeOptions };
+    
+    const routePath = new google.maps.Polyline({
+        path: coordinates,
+        ...options
+    });
+    
+    routePath.setMap(map);
+    routePolylines.push(routePath);
+    
+    return routePath;
+}
+
+// Draw routes for trails based on trail name/type
+function drawTrailRoutes(trailData) {
+    // Group trails by trail name
+    const trailGroups = groupTrailsByName(trailData);
+    
+    // Define colors for different trails
+    const trailColors = {
+        'SRT': '#4285f4',    // Blue for Schuylkill River Trail
+        'CVT': '#34a853',    // Green for Chester Valley Trail
+        'CCT': '#fbbc04',    // Yellow for Cross County Trail
+        'default': '#ff6d01' // Orange for others
+    };
+    
+    Object.entries(trailGroups).forEach(([trailName, trails]) => {
+        if (trails.length > 1) {
+            // Sort trails by some criteria (you might want to customize this)
+            const sortedTrails = sortTrailsForRoute(trails);
+            
+            // Create coordinates array
+            const coordinates = sortedTrails.map(trail => ({
+                lat: trail.latitude,
+                lng: trail.longitude
+            }));
+            
+            // Draw route with trail-specific color
+            const color = trailColors[trailName] || trailColors.default;
+            drawRoute(coordinates, {
+                strokeColor: color,
+                strokeWeight: 4,
+                strokeOpacity: 0.8
+            });
+        }
+    });
+}
+
+// Group trails by trail name
+function groupTrailsByName(trailData) {
+    return trailData.reduce((groups, trail) => {
+        const trailName = trail.trail || 'unknown';
+        if (!groups[trailName]) {
+            groups[trailName] = [];
+        }
+        groups[trailName].push(trail);
+        return groups;
+    }, {});
+}
+
+// Sort trails for logical route order (customize based on your needs)
+function sortTrailsForRoute(trails) {
+    // Simple sorting by latitude (north to south)
+    // You might want to implement more sophisticated routing
+    return trails.sort((a, b) => b.latitude - a.latitude);
+}
+
+// Clear all route polylines
+function clearRoutes() {
+    routePolylines.forEach(polyline => {
+        polyline.setMap(null);
+    });
+    routePolylines = [];
+}
+
+// Draw route from GPS coordinate string (e.g., "lat1,lng1;lat2,lng2;...")
+function drawRouteFromString(coordinateString, routeOptions = {}) {
+    try {
+        const coordinates = coordinateString.split(';').map(coord => {
+            const [lat, lng] = coord.split(',').map(Number);
+            return { lat, lng };
+        });
+        
+        return drawRoute(coordinates, routeOptions);
+    } catch (error) {
+        console.error('Error parsing coordinate string:', error);
+        return null;
+    }
+}
+
+// Use Google Directions API to get route between waypoints
+function drawDirectionsRoute(waypoints, routeOptions = {}) {
+    if (waypoints.length < 2) {
+        console.error('Need at least 2 waypoints for directions');
+        return;
+    }
+    
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer({
+        suppressMarkers: true, // Don't show default markers
+        ...routeOptions
+    });
+    
+    const request = {
+        origin: waypoints[0],
+        destination: waypoints[waypoints.length - 1],
+        waypoints: waypoints.slice(1, -1).map(point => ({ location: point })),
+        travelMode: google.maps.TravelMode.WALKING, // or BICYCLING, DRIVING
+        optimizeWaypoints: true
+    };
+    
+    directionsService.route(request, (result, status) => {
+        if (status === 'OK') {
+            directionsRenderer.setDirections(result);
+            directionsRenderer.setMap(map);
+            routePolylines.push(directionsRenderer); // Store for later cleanup
+        } else {
+            console.error('Directions request failed:', status);
         }
     });
 }

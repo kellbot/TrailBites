@@ -1,0 +1,159 @@
+{
+  "trails": [
+    {
+      "id": 1,
+      "name": "Donut House",
+      "latitude": 40.0695801,
+      "longitude": -75.4441911,
+      "description": "Donuts, coffee, and sodas",
+      "difficulty": 1,
+      "trail": "CVT",
+      "comments": "Access from the back of the shopping center via the nearby apartment complex, The Point at Berwyn",
+      "amenities": ["food", "drinks"],
+      "type": "counter-service",
+      "route_waypoints": [
+        [40.068559,-75.4446417],
+        [40.068945, -75.444143],
+        [40.069084, -75.443966],
+        [40.068962, -75.443299],
+        [40.069549, -75.443239],
+        [40.0695801, -75.4441911]
+      ]
+    },
+    {
+      "id": 2,
+      "name": "The Tomato Shack",
+      "latitude": 40.0734704,
+      "longitude": -75.3142649,
+      "description": "Pizza, sandwiches, sodas",
+      "difficulty": 1,
+      "trail": "SRT",
+      "comments": "Bike rack and outdoor seating",
+      "amenities": ["food", "drinks", "bike_parking", "outdoor_seating"],
+      "type": "restaurant"
+    },
+    {
+      "id": 3,
+      "name": "Morning Talk Cafe",
+      "latitude": 40.0741143,
+      "longitude": -75.3067029,
+      "description": "Coffee, snacks, and breakfast fare",
+      "difficulty": 3,
+      "trail": "SRT",
+      "comments": "The last few blocks up the hill are steep, recommend taking Oak St to 1st Ave rather than going on Fayette.",
+      "amenities": ["coffee", "food"],
+      "type": "cafe",
+      "warnings": ["steep_access"]
+    },
+    {
+      "id": 4,
+      "name": "Merenda Box",
+      "latitude": 40.0741575,
+      "longitude": -75.2931169,
+      "description": "Brazilian pastries and sandwiches, coffee",
+      "difficulty": 2,
+      "trail": "SRT",
+      "comments": "From the SRT take Lee to Hector, or Lee to Elm to Righter",
+      "amenities": ["coffee", "pastries", "sandwiches"],
+      "type": "bakery",
+      "cuisine": "brazilian"
+    },
+    {
+      "id": 5,
+      "name": "Waterfront Gourmet Cafe & Deli",
+      "latitude": 39.9452668,
+      "longitude": -75.1877127,
+      "description": "Coffee and light fare",
+      "difficulty": 1,
+      "trail": "SRT",
+      "comments": "Located inside the CHOP building",
+      "amenities": ["coffee", "light_fare"],
+      "type": "cafe",
+      "location_type": "indoor"
+    },
+    {
+      "id": 6,
+      "name": "Cosmic Cafe",
+      "latitude": 39.9690551,
+      "longitude": -75.1878722,
+      "description": "Light fare",
+      "difficulty": 1,
+      "trail": "SRT",
+      "comments": "Right on the SRT by Boathouse Row",
+      "amenities": ["light_fare"],
+      "type": "cafe",
+      "landmarks": ["boathouse_row"]
+    },
+    {
+      "id": 7,
+      "name": "Cracker Barrel",
+      "latitude": 40.1006984,
+      "longitude": -75.2976213,
+      "description": "Greasy roadside nostalgia",
+      "difficulty": 2,
+      "trail": "CCT",
+      "comments": "Take the Cross County Trail to Gallaher Rd",
+      "amenities": ["full_restaurant"],
+      "type": "restaurant",
+      "cuisine": "american"
+    },
+    {
+      "id": 8,
+      "name": "Washington Memorial Chapel Cabin Shop",
+      "latitude": 40.1048974,
+      "longitude": -75.4402452,
+      "description": "Snacks and sodas",
+      "difficulty": 2,
+      "trail": "SRT",
+      "comments": "Shop is behind the chapel, take the SRT to Valley Forge park",
+      "amenities": ["snacks", "drinks"],
+      "type": "shop",
+      "landmarks": ["valley_forge_park", "chapel"]
+    },
+    {
+      "id": 9,
+      "name": "Main Street Manayunk",
+      "latitude": 40.025208,
+      "longitude": -75.223651,
+      "description": "Multiple restaurants",
+      "difficulty": 1,
+      "trail": "SRT",
+      "comments": "Tons of options",
+      "amenities": ["multiple_restaurants", "shopping"],
+      "type": "district",
+      "neighborhood": "manayunk"
+    },
+    {
+      "id": 10,
+      "name": "Puddlers Kitchen",
+      "latitude": 40.1082812,
+      "longitude": -75.345075,
+      "description": "Sit down brewpub",
+      "difficulty": 1,
+      "trail": "CVT",
+      "comments": "Located right across the bridge in Bridgeport",
+      "amenities": ["full_restaurant", "bar", "beer"],
+      "type": "restaurant",
+      "cuisine": "pub_food"
+    },
+    {
+      "id": 11,
+      "name": "Wegmans",
+      "latitude": 40.048991,
+      "longitude": -75.520003,
+      "description": "Grocery store",
+      "difficulty": 1,
+      "trail": "CVT",
+      "comments": "Same shopping center also has a Target and Chipotle",
+      "amenities": ["grocery", "shopping_center"],
+      "type": "grocery",
+      "nearby": ["target", "chipotle"]
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2025-10-06",
+    "description": "Trail stops and routes for Philadelphia area bike trails",
+    "coordinateSystem": "WGS84"
+  }
+}

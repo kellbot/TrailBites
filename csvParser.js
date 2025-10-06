@@ -104,3 +104,83 @@ async function loadCSVData(csvFilePath) {
         throw error;
     }
 }
+
+// Function to load and parse JSON data
+async function loadJSONData(jsonFilePath) {
+    try {
+        const response = await fetch(jsonFilePath);
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load JSON file: ${response.status} ${response.statusText}`);
+        }
+        
+        const jsonData = await response.json();
+        
+        // Extract trails array from JSON structure
+        const trailsArray = jsonData.trails || jsonData;
+        
+        // Validate the data
+        const validatedData = validateJSONLocationData(trailsArray);
+        
+        console.log(`Loaded ${validatedData.length} valid locations from JSON`);
+        return validatedData;
+        
+    } catch (error) {
+        console.error('Error loading JSON data:', error);
+        throw error;
+    }
+}
+
+// Validate JSON location data
+function validateJSONLocationData(data) {
+    const requiredFields = ['name', 'latitude', 'longitude'];
+    const validData = [];
+
+    data.forEach((item, index) => {
+        const missingFields = requiredFields.filter(field => !item[field]);
+        
+        if (missingFields.length > 0) {
+            console.warn(`Item ${index + 1} missing required fields: ${missingFields.join(', ')}`);
+            return;
+        }
+
+        const lat = parseFloat(item.latitude);
+        const lng = parseFloat(item.longitude);
+
+        if (isNaN(lat) || isNaN(lng)) {
+            console.warn(`Item ${index + 1} has invalid coordinates: lat=${item.latitude}, lng=${item.longitude}`);
+            return;
+        }
+
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+            console.warn(`Item ${index + 1} has out-of-range coordinates: lat=${lat}, lng=${lng}`);
+            return;
+        }
+
+        // Ensure latitude and longitude are numbers
+        validData.push({
+            ...item,
+            latitude: lat,
+            longitude: lng
+        });
+    });
+
+    return validData;
+}
+
+// Function to load full JSON data with routes
+async function loadFullJSONData(jsonFilePath) {
+    try {
+        const response = await fetch(jsonFilePath);
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load JSON file: ${response.status} ${response.statusText}`);
+        }
+        
+        return await response.json();
+        
+    } catch (error) {
+        console.error('Error loading full JSON data:', error);
+        throw error;
+    }
+}
