@@ -74,6 +74,12 @@ async function loadTrailData() {
             info.textContent = `Loaded ${trailData.length} trail locations. Click markers for details.`;
         }
         
+        // Show the legend after data is loaded
+        const legend = document.getElementById('legend');
+        if (legend) {
+            legend.style.display = 'block';
+        }
+        
     } catch (error) {
         console.error('Error loading trail data:', error);
         if (info) {
@@ -94,6 +100,55 @@ async function loadTrailData() {
     }
 }
 
+// Get marker color based on difficulty (1-5 scale, green to blue)
+function getMarkerColor(difficulty) {
+    const diff = parseInt(difficulty) || 1; // Default to 1 if invalid
+    
+    switch(diff) {
+        case 1: return 'green';     // Easy - Green
+        case 2: return 'ltblue';    // Easy-Medium - Light Blue  
+        case 3: return 'yellow';    // Medium - Yellow
+        case 4: return 'orange';    // Medium-Hard - Orange
+        case 5: return 'blue';      // Hard - Blue
+        default: return 'green';    // Default to green
+    }
+}
+
+// Get marker icon URL based on difficulty
+function getMarkerIcon(difficulty) {
+    const color = getMarkerColor(difficulty);
+    return {
+        url: `https://maps.google.com/mapfiles/ms/icons/${color}-dot.png`,
+        scaledSize: new google.maps.Size(32, 32)
+    };
+}
+
+// Get difficulty text description
+function getDifficultyText(difficulty) {
+    const diff = parseInt(difficulty) || 1;
+    
+    switch(diff) {
+        case 1: return 'Very Easy';
+        case 2: return 'Easy';
+        case 3: return 'Moderate';
+        case 4: return 'Difficult';
+        case 5: return 'Very Difficult';
+        default: return 'Easy';
+    }
+}
+
+// Get display color for difficulty text (different from marker color for better readability)
+function getDifficultyDisplayColor(markerColor) {
+    switch(markerColor) {
+        case 'green': return '#2e7d2e';
+        case 'ltblue': return '#1e90ff';
+        case 'yellow': return '#ff8c00';
+        case 'orange': return '#ff4500';
+        case 'blue': return '#0066cc';
+        default: return '#2e7d2e';
+    }
+}
+
 // Add markers to the map
 function addMarkersToMap(trailData) {
     trailData.forEach((trail, index) => {
@@ -101,10 +156,7 @@ function addMarkersToMap(trailData) {
             position: { lat: trail.latitude, lng: trail.longitude },
             map: map,
             title: trail.name,
-            icon: {
-                url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
-                scaledSize: new google.maps.Size(32, 32)
-            }
+            icon: getMarkerIcon(trail.difficulty)
         });
 
         // Create info window content
@@ -144,7 +196,18 @@ function createInfoWindowContent(trail) {
     fields.forEach(field => {
         if (trail[field.key] && trail[field.key].trim()) {
             const div = document.createElement('div');
-            div.innerHTML = `<strong>${field.label}:</strong> ${trail[field.key]}`;
+            
+            // Special handling for difficulty to show color coding
+            if (field.key === 'difficulty') {
+                const difficultyValue = parseInt(trail[field.key]) || 1;
+                const color = getMarkerColor(difficultyValue);
+                const difficultyText = getDifficultyText(difficultyValue);
+                
+                div.innerHTML = `<strong>${field.label}:</strong> <span style="color: ${getDifficultyDisplayColor(color)}; font-weight: bold;">${difficultyValue} - ${difficultyText}</span>`;
+            } else {
+                div.innerHTML = `<strong>${field.label}:</strong> ${trail[field.key]}`;
+            }
+            
             div.style.marginBottom = '5px';
             content.appendChild(div);
         }

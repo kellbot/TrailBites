@@ -81,6 +81,40 @@ main {
     overflow: hidden;
 }
 
+/* Legend styles */
+#legend {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid #ccc;
+}
+
+.legend-dot.green { background-color: #34a853; }
+.legend-dot.ltblue { background-color: #4285f4; }
+.legend-dot.yellow { background-color: #fbbc04; }
+.legend-dot.orange { background-color: #ff6d01; }
+.legend-dot.blue { background-color: #1a73e8; }
+
 /* Responsive design */
 @media (max-width: 768px) {
     header h1 {
@@ -90,6 +124,11 @@ main {
     #controls {
         flex-direction: column;
         text-align: center;
+    }
+    
+    .legend-items {
+        justify-content: center;
+        gap: 10px;
     }
     
     #map {
