@@ -144,7 +144,7 @@ function getDifficultyDisplayColor(markerColor) {
         case 'ltblue': return '#1e90ff';
         case 'yellow': return '#ff8c00';
         case 'orange': return '#ff4500';
-        case 'blue': return '#0066cc';
+        case 'blue': return '#cc0300ff';
         default: return '#2e7d2e';
     }
 }

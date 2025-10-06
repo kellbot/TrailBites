@@ -113,7 +113,7 @@ main {
 .legend-dot.ltblue { background-color: #4285f4; }
 .legend-dot.yellow { background-color: #fbbc04; }
 .legend-dot.orange { background-color: #ff6d01; }
-.legend-dot.blue { background-color: #1a73e8; }
+.legend-dot.blue { background-color: #cc0300; }
 
 /* Responsive design */
 @media (max-width: 768px) {
