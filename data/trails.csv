@@ -1,11 +1,6 @@
-name,latitude,longitude,description,difficulty,length,type,rating,features
-Appalachian Trail - Springer Mountain,34.6267,-84.1939,"Southern terminus of the famous Appalachian Trail",Moderate,2.5 miles,Hiking,4.5,"Scenic views, Historic marker, Wildlife"
-Yellowstone - Old Faithful,44.4605,-110.8281,"Famous geyser and surrounding trails",Easy,1.2 miles,Walking,4.8,"Geysers, Wildlife, Boardwalks"
-Grand Canyon - Bright Angel Trail,36.0544,-112.1401,"Popular trail descending into Grand Canyon",Difficult,9.5 miles,Hiking,4.7,"Canyon views, Rest houses, Water stations"
-Yosemite - Half Dome,37.7459,-119.5332,"Challenging hike to iconic granite dome",Very Difficult,16 miles,Hiking,4.9,"Cables, Granite domes, Valley views"
-Zion - Angels Landing,37.2692,-112.9481,"Thrilling hike with chains and narrow ridges",Difficult,5.4 miles,Hiking,4.6,"Chains, Cliff views, Narrow ridges"
-Mount Washington - Tuckerman Ravine,44.2619,-71.3032,"Popular winter and summer hiking destination",Difficult,8.2 miles,Hiking,4.4,"Alpine terrain, Weather station, Views"
-Pacific Crest Trail - Mount Whitney,36.5786,-118.2923,"Highest peak in contiguous United States",Very Difficult,22 miles,Backpacking,4.8,"Summit views, Alpine lakes, Permits required"
-Glacier National Park - Highline Trail,48.6959,-113.7178,"Scenic trail along Continental Divide",Moderate,11.8 miles,Hiking,4.7,"Mountain goats, Wildflowers, Glacial views"
-Great Smoky Mountains - Cataract Falls,35.6307,-83.4108,"Beautiful waterfall hike in the Smokies",Easy,1 mile,Hiking,4.3,"Waterfalls, Forest, Easy access"
-Acadia - Cadillac Mountain,44.3531,-68.2233,"Highest point on East Coast",Easy,3.5 miles,Hiking,4.5,"Sunrise views, Atlantic Ocean, Granite summit"
+name,latitude,longitude,description,difficulty,trail,comments
+Donut House,40.0695801,-75.4441911,"Donuts, coffee, and sodas",1,CVT,"Access from the back of the shopping center via the nearby apartment complex, The Point at Berwyn"
+The Tomato Shack,40.0734704,-75.3142649,"Pizza, sandwiches, sodas",1,SRT,"Bike rack and outdoor seating"
+Morning Talk Cafe,40.0741143,-75.3067029,"Coffee, snacks, and breakfast fare",2,SRT,"The last few blocks up the hill are steep, recommend taking Oak St to 1st Ave rather than going on Fayette."
+Merenda Box,40.0741575,-75.2931169,"Brazilian pastries and sandwiches, coffee",2,SRT,"From the SRT take Lee to Hector, or Lee to Elm to Righter"
+Waterfront Gourmet Cafe & Deli,39.9452668,-75.1877127,"Coffee and light fare",1,SRT,"Located inside the CHOP building"
