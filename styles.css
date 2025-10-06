@@ -109,8 +109,8 @@ main {
     border: 1px solid #ccc;
 }
 
-.legend-dot.green { background-color: #34a853; }
-.legend-dot.ltblue { background-color: #4285f4; }
+.legend-dot.green { background-color: #4285f4; }
+.legend-dot.ltblue { background-color: #34a853; }
 .legend-dot.yellow { background-color: #fbbc04; }
 .legend-dot.orange { background-color: #ff6d01; }
 .legend-dot.blue { background-color: #cc0300; }

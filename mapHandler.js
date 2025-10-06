@@ -18,6 +18,7 @@ function initMap() {
         zoom: 6,
         center: defaultCenter,
         mapTypeId: 'terrain',
+        mapId: 'DEMO_MAP_ID', // Required for Advanced Markers
         styles: [
             {
                 featureType: 'poi',
@@ -105,22 +106,30 @@ function getMarkerColor(difficulty) {
     const diff = parseInt(difficulty) || 1; // Default to 1 if invalid
     
     switch(diff) {
-        case 1: return 'green';     // Easy - Green
-        case 2: return 'ltblue';    // Easy-Medium - Light Blue  
-        case 3: return 'yellow';    // Medium - Yellow
-        case 4: return 'orange';    // Medium-Hard - Orange
-        case 5: return 'blue';      // Hard - Blue
-        default: return 'green';    // Default to green
+        case 1: return '#1e90ff';     // Easy - Blue
+        case 2: return '#2e7d2e';     // Easy-Medium - Green
+        case 3: return '#ff8c00';     // Medium - Dark Orange
+        case 4: return '#ff4500';     // Medium-Hard - Orange Red
+        case 5: return '#dc143c';     // Hard - Crimson
+        default: return '#2e7d2e';    // Default to green
     }
 }
 
 // Get marker icon URL based on difficulty
 function getMarkerIcon(difficulty) {
     const color = getMarkerColor(difficulty);
-    return {
-        url: `https://maps.google.com/mapfiles/ms/icons/${color}-dot.png`,
-        scaledSize: new google.maps.Size(32, 32)
-    };
+    return `https://maps.google.com/mapfiles/ms/icons/${color}-dot.png`;
+}
+
+
+function createTrailPin(trail) {
+    const pin = new google.maps.marker.PinElement({
+        scale: 1,
+        background: getMarkerColor(trail.difficulty),
+        borderColor: '#ffffff',
+        glyphColor: '#ffffff'
+    });
+    return pin.element;
 }
 
 // Get difficulty text description
@@ -137,26 +146,23 @@ function getDifficultyText(difficulty) {
     }
 }
 
-// Get display color for difficulty text (different from marker color for better readability)
-function getDifficultyDisplayColor(markerColor) {
-    switch(markerColor) {
-        case 'green': return '#2e7d2e';
-        case 'ltblue': return '#1e90ff';
-        case 'yellow': return '#ff8c00';
-        case 'orange': return '#ff4500';
-        case 'blue': return '#cc0300ff';
-        default: return '#2e7d2e';
-    }
+// Get display color for difficulty text (uses same colors as markers)
+function getDifficultyDisplayColor(difficulty) {
+    return getMarkerColor(difficulty);
 }
 
 // Add markers to the map
 function addMarkersToMap(trailData) {
     trailData.forEach((trail, index) => {
-        const marker = new google.maps.Marker({
+        // Create custom marker content
+        const markerContent = createTrailPin(trail);
+        
+        // Create Advanced Marker
+        const marker = new google.maps.marker.AdvancedMarkerElement({
             position: { lat: trail.latitude, lng: trail.longitude },
             map: map,
             title: trail.name,
-            icon: getMarkerIcon(trail.difficulty)
+            content: markerContent
         });
 
         // Create info window content
@@ -200,10 +206,10 @@ function createInfoWindowContent(trail) {
             // Special handling for difficulty to show color coding
             if (field.key === 'difficulty') {
                 const difficultyValue = parseInt(trail[field.key]) || 1;
-                const color = getMarkerColor(difficultyValue);
                 const difficultyText = getDifficultyText(difficultyValue);
+                const color = getDifficultyDisplayColor(difficultyValue);
                 
-                div.innerHTML = `<strong>${field.label}:</strong> <span style="color: ${getDifficultyDisplayColor(color)}; font-weight: bold;">${difficultyValue} - ${difficultyText}</span>`;
+                div.innerHTML = `<strong>${field.label}:</strong> <span style="color: ${color}; font-weight: bold;">${difficultyValue} - ${difficultyText}</span>`;
             } else {
                 div.innerHTML = `<strong>${field.label}:</strong> ${trail[field.key]}`;
             }
@@ -226,7 +232,7 @@ function createInfoWindowContent(trail) {
 // Clear all markers from the map
 function clearMarkers() {
     markers.forEach(marker => {
-        marker.setMap(null);
+        marker.map = null; // Advanced Markers use map property instead of setMap()
     });
     markers = [];
     
@@ -242,7 +248,7 @@ function fitMapToMarkers() {
     const bounds = new google.maps.LatLngBounds();
     
     markers.forEach(marker => {
-        bounds.extend(marker.getPosition());
+        bounds.extend(marker.position); // Advanced Markers use position property
     });
     
     map.fitBounds(bounds);

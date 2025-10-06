@@ -40,8 +40,47 @@
 
     <script src="csvParser.js"></script>
     <script src="mapHandler.js"></script>
-    <script async defer 
-        src="https://maps.googleapis.com/maps/api/js?key=MAPS_API_KEY&callback=initMap">
+    <script>
+        // Load Google Maps API with smart key detection
+        async function loadGoogleMapsAPI() {
+            let apiKey = 'MAPS_API_KEY'; // Default fallback for GitHub Actions
+            
+            // Try to load from local-config.json first
+            try {
+                const response = await fetch('local-config.json');
+                if (response.ok) {
+                    const config = await response.json();
+                    if (config.maps) {
+                        apiKey = config.maps;
+                        console.log('Using API key from local-config.json');
+                    }
+                }
+            } catch (error) {
+                console.log('No local-config.json found, using default key');
+            }
+            
+            // Create and load the Google Maps script
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=marker&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            
+            script.onerror = () => {
+                console.error('Failed to load Google Maps API');
+                document.getElementById('map').innerHTML = `
+                    <div style="padding: 40px; text-align: center; background: #ffebee; color: #c62828; border-radius: 8px;">
+                        <h3>Google Maps API Error</h3>
+                        <p>Please check your API key configuration.</p>
+                        <p><small>Create local-config.json with {"maps": "your-api-key"} for local development</small></p>
+                    </div>
+                `;
+            };
+            
+            document.head.appendChild(script);
+        }
+        
+        // Load when DOM is ready
+        document.addEventListener('DOMContentLoaded', loadGoogleMapsAPI);
     </script>
 </body>
 </html>

@@ -7,7 +7,7 @@ node_modules/
 .env.production
 
 # API Keys and sensitive configuration
-config.js
+local-config.json
 
 # Build outputs
 dist/
