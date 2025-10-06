@@ -137,10 +137,8 @@ function createInfoWindowContent(trail) {
     const fields = [
         { key: 'description', label: 'Description' },
         { key: 'difficulty', label: 'Difficulty' },
-        { key: 'length', label: 'Length' },
-        { key: 'type', label: 'Trail Type' },
-        { key: 'rating', label: 'Rating' },
-        { key: 'features', label: 'Features' }
+        { key: 'trail', label: 'Trail Name' },
+        { key: 'comments', label: 'Commens' }
     ];
     
     fields.forEach(field => {
