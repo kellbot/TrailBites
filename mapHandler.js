@@ -5,9 +5,15 @@ let infoWindow;
 
 // Initialize the Google Map
 function initMap() {
-    // Default center (can be changed based on your data)
-    const defaultCenter = { lat: 39.8283, lng: -98.5795 }; // Center of USA
+    // Clear any initial loading content
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+        mapElement.innerHTML = '';
+    }
     
+    // Default center (can be changed based on your data)
+    const defaultCenter = { lat: 40.0244751, lng: -75.2311484 }; // Philly
+
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 6,
         center: defaultCenter,
@@ -24,17 +30,29 @@ function initMap() {
     infoWindow = new google.maps.InfoWindow();
     
     console.log('Map initialized successfully');
+    
+    // Automatically load trail data when map is ready
+    loadTrailData();
 }
 
 // Load trail data and display on map
 async function loadTrailData() {
     const loadButton = document.getElementById('loadData');
     const info = document.getElementById('info');
+    const mapElement = document.getElementById('map');
     
     try {
-        loadButton.disabled = true;
-        loadButton.textContent = 'Loading...';
-        info.textContent = 'Loading trail data...';
+        // Update UI elements if they exist
+        if (loadButton) {
+            loadButton.disabled = true;
+            loadButton.textContent = 'Loading...';
+        }
+        if (info) {
+            info.textContent = 'Loading trail data...';
+        }
+        if (mapElement) {
+            mapElement.classList.add('loading');
+        }
         
         // Clear existing markers
         clearMarkers();
@@ -52,15 +70,27 @@ async function loadTrailData() {
         // Fit map to show all markers
         fitMapToMarkers();
         
-        info.textContent = `Loaded ${trailData.length} trail locations. Click markers for details.`;
+        if (info) {
+            info.textContent = `Loaded ${trailData.length} trail locations. Click markers for details.`;
+        }
         
     } catch (error) {
         console.error('Error loading trail data:', error);
-        info.textContent = `Error loading data: ${error.message}`;
-        alert(`Failed to load trail data: ${error.message}`);
+        if (info) {
+            info.textContent = `Error loading data: ${error.message}`;
+        }
+        // Only show alert if this is a manual reload (button exists and was clicked)
+        if (loadButton && loadButton.disabled) {
+            alert(`Failed to load trail data: ${error.message}`);
+        }
     } finally {
-        loadButton.disabled = false;
-        loadButton.textContent = 'Reload Trail Data';
+        if (loadButton) {
+            loadButton.disabled = false;
+            loadButton.textContent = 'Reload Trail Data';
+        }
+        if (mapElement) {
+            mapElement.classList.remove('loading');
+        }
     }
 }
 
