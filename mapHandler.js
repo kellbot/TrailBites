@@ -17,7 +17,7 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 6,
         center: defaultCenter,
-        mapTypeId: 'terrain',
+        mapTypeId: 'roadmap',
         mapId: 'DEMO_MAP_ID', // Required for Advanced Markers
         styles: [
             {
@@ -27,6 +27,9 @@ function initMap() {
             }
         ]
     });
+
+    const bikeLayer = new google.maps.BicyclingLayer();
+    bikeLayer.setMap(map);
 
     infoWindow = new google.maps.InfoWindow();
     
