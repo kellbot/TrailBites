@@ -36,6 +36,38 @@
                 </div>
             </div>
         </div>
+        
+        <div id="trails-table-container" style="display: none;">
+            <h2>Trail Locations</h2>
+            <div id="table-controls">
+                <input type="text" id="search-input" placeholder="Search trails..." />
+                <select id="difficulty-filter">
+                    <option value="">All Difficulties</option>
+                    <option value="1">1 - Very Easy</option>
+                    <option value="2">2 - Easy</option>
+                    <option value="3">3 - Moderate</option>
+                    <option value="4">4 - Difficult</option>
+                    <option value="5">5 - Very Difficult</option>
+                </select>
+            </div>
+            <div id="trails-table-wrapper">
+                <table id="trails-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Difficulty</th>
+                            <th>Trail</th>
+                            <th>Description</th>
+                            <th>Comments</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trails-table-body">
+                        <!-- Trails will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </main>
 
     <script src="csvParser.js"></script>

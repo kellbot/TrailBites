@@ -74,6 +74,9 @@ async function loadTrailData() {
         // Fit map to show all markers
         fitMapToMarkers();
         
+        // Populate trails table
+        populateTrailsTable(trailData);
+        
         if (info) {
             info.textContent = `Loaded ${trailData.length} trail locations. Click markers for details.`;
         }
@@ -109,8 +112,8 @@ function getMarkerColor(difficulty) {
     const diff = parseInt(difficulty) || 1; // Default to 1 if invalid
     
     switch(diff) {
-        case 1: return '#1e90ff';     // Easy - Blue
-        case 2: return '#2e7d2e';     // Easy-Medium - Green
+        case 1: return '#86acffff';     // Easy - Blue
+        case 2: return '#92d841ff';     // Easy-Medium - Green
         case 3: return '#ff8c00';     // Medium - Dark Orange
         case 4: return '#ff4500';     // Medium-Hard - Orange Red
         case 5: return '#dc143c';     // Hard - Crimson
@@ -275,3 +278,127 @@ window.gm_authFailure = function() {
         </div>
     `;
 };
+
+// Global variable to store trail data for table operations
+let currentTrailData = [];
+
+// Populate the trails table
+function populateTrailsTable(trailData) {
+    currentTrailData = trailData;
+    const tableContainer = document.getElementById('trails-table-container');
+    const tableBody = document.getElementById('trails-table-body');
+    
+    if (!tableContainer || !tableBody) return;
+    
+    // Show the table container
+    tableContainer.style.display = 'block';
+    
+    // Clear existing content
+    tableBody.innerHTML = '';
+    
+    // Populate table rows
+    trailData.forEach((trail, index) => {
+        const row = createTrailTableRow(trail, index);
+        tableBody.appendChild(row);
+    });
+    
+    // Set up event listeners for filtering and searching
+    setupTableControls();
+}
+
+// Create a table row for a trail
+function createTrailTableRow(trail, index) {
+    const row = document.createElement('tr');
+    
+    // Get difficulty info
+    const difficultyValue = parseInt(trail.difficulty) || 1;
+    const difficultyText = getDifficultyText(difficultyValue);
+    const difficultyColor = getMarkerColor(difficultyValue);
+    
+    row.innerHTML = `
+        <td><strong>${trail.name || 'Unknown'}</strong></td>
+        <td>
+            <span class="difficulty-badge" style="background-color: ${difficultyColor};">
+                ${difficultyValue} - ${difficultyText}
+            </span>
+        </td>
+        <td>${trail.trail || '-'}</td>
+        <td class="trail-description" title="${trail.description || ''}">${trail.description || '-'}</td>
+        <td class="trail-comments" title="${trail.comments || ''}">${trail.comments || '-'}</td>
+        <td>
+            <button class="trail-action-btn" onclick="focusOnTrail(${index})">
+                View on Map
+            </button>
+        </td>
+    `;
+    
+    return row;
+}
+
+// Focus on a specific trail on the map
+function focusOnTrail(index) {
+    const trail = currentTrailData[index];
+    const marker = markers[index];
+    
+    if (trail && marker) {
+        // Center map on the trail
+        map.setCenter({ lat: trail.latitude, lng: trail.longitude });
+        map.setZoom(15);
+        
+        // Open info window
+        const infoContent = createInfoWindowContent(trail);
+        infoWindow.setContent(infoContent);
+        infoWindow.open(map, marker);
+        
+        // Scroll to top to show the map
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+// Set up table controls (search and filter)
+function setupTableControls() {
+    const searchInput = document.getElementById('search-input');
+    const difficultyFilter = document.getElementById('difficulty-filter');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', filterTable);
+    }
+    
+    if (difficultyFilter) {
+        difficultyFilter.addEventListener('change', filterTable);
+    }
+}
+
+// Filter table based on search and difficulty filter
+function filterTable() {
+    const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+    const difficultyFilter = document.getElementById('difficulty-filter')?.value || '';
+    const tableBody = document.getElementById('trails-table-body');
+    
+    if (!tableBody) return;
+    
+    const rows = tableBody.querySelectorAll('tr');
+    
+    rows.forEach((row, index) => {
+        const trail = currentTrailData[index];
+        if (!trail) return;
+        
+        // Check search term
+        const matchesSearch = !searchTerm || 
+            (trail.name && trail.name.toLowerCase().includes(searchTerm)) ||
+            (trail.description && trail.description.toLowerCase().includes(searchTerm)) ||
+            (trail.trail && trail.trail.toLowerCase().includes(searchTerm)) ||
+            (trail.comments && trail.comments.toLowerCase().includes(searchTerm));
+        
+        // Check difficulty filter
+        const matchesDifficulty = !difficultyFilter || 
+            trail.difficulty === difficultyFilter;
+        
+        // Show/hide row
+        if (matchesSearch && matchesDifficulty) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
