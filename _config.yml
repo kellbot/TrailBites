@@ -1,0 +1,16 @@
+# GitHub Pages Configuration
+
+# Enable GitHub Pages
+source: Jekyll
+theme: minima
+
+# Include these files in the build
+include:
+  - data/
+  - "*.js"
+  - "*.css"
+
+# Exclude unnecessary files
+exclude:
+  - "*.md"
+  - ".github/"

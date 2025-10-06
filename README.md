@@ -1,0 +1,134 @@
+# TrailBites
+
+A GitHub Pages project that displays trail locations on an interactive map using the Google Maps API and CSV data.
+
+## Features
+
+- 🗺️ Interactive Google Maps integration
+- 📄 CSV data parsing for trail locations
+- 📍 Custom markers with detailed information windows
+- 📱 Responsive design for mobile and desktop
+- 🎨 Clean, modern UI with trail-themed styling
+
+## Setup Instructions
+
+### 1. Google Maps API Key
+
+To use this project, you'll need a Google Maps API key:
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the "Maps JavaScript API"
+4. Create credentials (API key)
+5. Replace `YOUR_API_KEY_HERE` in `index.html` with your actual API key
+
+### 2. GitHub Pages Deployment
+
+1. Push this repository to GitHub
+2. Go to repository Settings → Pages
+3. Select source: "Deploy from a branch"
+4. Choose branch: `main` (or `master`)
+5. Select folder: `/ (root)`
+6. Click Save
+
+Your site will be available at: `https://yourusername.github.io/repositoryname`
+
+### 3. CSV Data Format
+
+The `data/trails.csv` file should follow this format:
+
+```csv
+name,latitude,longitude,description,difficulty,length,type,rating,features
+Trail Name,40.7128,-74.0060,"Description here",Easy,2.5 miles,Hiking,4.5,"Feature1, Feature2"
+```
+
+Required fields:
+- `name`: Trail name
+- `latitude`: Decimal latitude
+- `longitude`: Decimal longitude
+
+Optional fields:
+- `description`: Trail description
+- `difficulty`: Difficulty level
+- `length`: Trail length
+- `type`: Trail type (Hiking, Walking, etc.)
+- `rating`: Star rating
+- `features`: Comma-separated features
+
+## Local Development
+
+To run locally:
+
+1. Clone the repository
+2. Start a local server (Python example):
+   ```bash
+   python -m http.server 8000
+   ```
+3. Open `http://localhost:8000` in your browser
+
+Note: You'll need a local server due to CORS restrictions when loading CSV files.
+
+## File Structure
+
+```
+├── index.html          # Main HTML page
+├── styles.css          # Stylesheet
+├── csvParser.js        # CSV parsing utilities
+├── mapHandler.js       # Google Maps integration
+├── data/
+│   └── trails.csv      # Trail data
+└── README.md           # This file
+```
+
+## Customization
+
+### Adding New Trails
+
+Edit `data/trails.csv` to add new trail locations. The map will automatically load and display all valid entries.
+
+### Styling
+
+Modify `styles.css` to change the appearance. The current theme uses green colors appropriate for outdoor/trail themes.
+
+### Map Configuration
+
+In `mapHandler.js`, you can modify:
+- Default map center and zoom level
+- Map type (terrain, satellite, etc.)
+- Marker icons and styling
+- Info window content
+
+## Browser Support
+
+- Chrome (recommended)
+- Firefox
+- Safari
+- Edge
+
+## License
+
+This project is open source. Feel free to modify and distribute.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## Troubleshooting
+
+### Map Not Loading
+- Check that your Google Maps API key is valid
+- Ensure the Maps JavaScript API is enabled in Google Cloud Console
+- Check browser console for error messages
+
+### CSV Data Not Loading
+- Verify the CSV file path is correct
+- Ensure the CSV format matches the expected structure
+- Check for CORS issues if running locally
+
+### Markers Not Appearing
+- Verify latitude/longitude values are valid numbers
+- Check that coordinates are within valid ranges (-90 to 90 for lat, -180 to 180 for lng)
+- Look for console warnings about invalid data

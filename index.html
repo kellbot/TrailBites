@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrailBites - Trail Locations Map</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>TrailBites</h1>
+        <p>Discover amazing trail locations</p>
+    </header>
+    
+    <main>
+        <div id="controls">
+            <button id="loadData" onclick="loadTrailData()">Load Trail Data</button>
+            <div id="info">Click markers to see trail information</div>
+        </div>
+        
+        <div id="map"></div>
+    </main>
+
+    <script src="csvParser.js"></script>
+    <script src="mapHandler.js"></script>
+    <script async defer 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFB2abseJjAlLYiziYEvocwAf1NYytPN8&callback=initMap">
+    </script>
+</body>
+</html>
