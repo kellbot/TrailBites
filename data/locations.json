@@ -148,6 +148,15 @@
       "amenities": ["grocery", "shopping_center"],
       "type": "grocery",
       "nearby": ["target", "chipotle"]
+    },
+    {
+      "id": 12,
+      "name": "Lou's",
+      "latitude": 40.1114121,
+      "longitude": -75.3367974,
+      "description": "Sandwich shop"
+      "difficulty": 2,
+      "trail": "SRT"
     }
   ],
   "metadata": {
